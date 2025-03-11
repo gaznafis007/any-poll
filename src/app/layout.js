@@ -6,7 +6,7 @@ import Header from "@/components/header"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "VanishVote - Anonymous Time-Limited Polls",
+  title: "AnyPoll - Anonymous Time-Limited Polls",
   description: "Create anonymous polls that disappear after a set time. No login required.",
 }
 
@@ -22,4 +22,3 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
-
