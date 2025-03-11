@@ -27,13 +27,14 @@ const getPoll = async (id) => {
   }
 
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  return polls[id] || null
+//   const res = await fetch(`/api/polls/${id}`);
+//   const data = await res.json()
+//   return data
 }
 
 export default async function ResultsPage({ params }) {
-  const poll = await getPoll(params.id)
+    const {id} = await params
+  const poll = await getPoll(id)
 
   if (!poll) {
     notFound()

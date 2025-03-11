@@ -22,14 +22,20 @@ const getPoll = async (id) => {
   }
 
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  return polls[id] || null
+//   try {
+//     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/polls/${id}`);
+//     if (!res.ok) throw new Error("Poll not found");
+//     return await res.json();
+//   } catch (error) {
+//     console.error("Error fetching poll:", error);
+//     return null; // Handle errors gracefully
+//   }
 }
 
 export default async function PollPage({ params }) {
-  const poll = await getPoll(params.id)
-
+    const {id} = await params
+  const poll = await getPoll(id)
+    console.log(poll)
   if (!poll) {
     notFound()
   }

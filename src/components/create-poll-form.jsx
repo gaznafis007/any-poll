@@ -38,13 +38,24 @@ export default function CreatePollForm() {
       setIsSubmitting(false)
       return
     }
-
+    const poll = {
+        ...data,
+        createdAt: new Date()
+    }
+    // console.log(data)
     try {
       // This would normally send data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // For demo purposes, redirect to example poll
-      router.push("/poll/example-poll")
+    //   const res = await fetch('/api/polls', {
+    //     method: 'POST',
+    //     headers:{
+    //         'content-type': 'application/json'
+    //     },
+    //     body: JSON.stringify(poll)
+    //   })
+    //   const resData = await res.json()
+    //   if(resData.acknowledged){
+    //     router.push(`/poll/${resData?.insertedId}`)
+    //   }
     } catch (error) {
       console.error("Error creating poll:", error)
       alert("Failed to create poll. Please try again.")

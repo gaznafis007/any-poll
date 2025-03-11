@@ -6,7 +6,7 @@ import CommentSection from "./comment-section"
 import { FiShare2, FiTrendingUp, FiThumbsUp, FiHome } from "react-icons/fi"
 
 export default function PollResults({ poll }) {
-  const [reactions, setReactions] = useState(poll.reactions || { trending: 0, like: 0 })
+  const [reactions, setReactions] = useState(poll?.reactions || { trending: 0, like: 0 })
 
   // Calculate time remaining
   const expiresAt = new Date(poll.expiresAt)
@@ -54,7 +54,7 @@ export default function PollResults({ poll }) {
   }
 
   // Calculate total votes and percentages
-  const totalVotes = poll.options.reduce((sum, option) => sum + option.votes, 0)
+  const totalVotes = poll.options.reduce((sum, option) => sum + option?.votes, 0)
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
