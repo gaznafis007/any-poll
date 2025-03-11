@@ -60,8 +60,42 @@ export default function PollView({ poll }) {
   const handleReaction = async (type) => {
     try {
       // This would normally send data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
+      if(!poll.reactions){
+        const newPoll = {
+            ...poll,
+            reactions:{
+                trending: 0,
+                like: 0
+            }
+        }
+        const targetedReaction = newPoll?.reactions
+        targetedReaction[type] =+ 1 
+        const {_id, ...updatedPoll} = newPoll
+        const res = await fetch(`/api/polls/${poll._id}`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(updatedPoll)
+        })
+        const resData = await res.json()
+        console.log(resData)
+      }
+      else{
+        const {reactions:targetedReaction} = poll
+        targetedReaction[type] =+ 1
+        const {_id, updatedPoll} = poll
+        const res = await fetch(`/api/polls/${poll._id}`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(updatedPoll)
+        })
+        const resData = await res.json()
+        console.log(resData)
+      }
+      
       setReactions({
         ...reactions,
         [type]: reactions[type] + 1,
