@@ -22,15 +22,14 @@ export default function CommentSection({ pollId, comments: initialComments = [] 
 
     try {
       // This would normally send data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      const newCommentObj = {
-        id: Date.now(),
-        text: data.comment,
-        createdAt: new Date().toISOString(),
+      const comment = {
+        ...data,
+        pollId: pollId,
+        createdAt: new Date().toISOString()
       }
+      console.log(comment)
 
-      setComments([...comments, newCommentObj])
+      setComments([...comments, comment])
       reset()
     } catch (error) {
       console.error("Error adding comment:", error)
