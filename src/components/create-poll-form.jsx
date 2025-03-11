@@ -45,17 +45,17 @@ export default function CreatePollForm() {
     // console.log(data)
     try {
       // This would normally send data to your backend
-    //   const res = await fetch('/api/polls', {
-    //     method: 'POST',
-    //     headers:{
-    //         'content-type': 'application/json'
-    //     },
-    //     body: JSON.stringify(poll)
-    //   })
-    //   const resData = await res.json()
-    //   if(resData.acknowledged){
-    //     router.push(`/poll/${resData?.insertedId}`)
-    //   }
+      const res = await fetch('/api/polls', {
+        method: 'POST',
+        headers:{
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(poll)
+      })
+      const resData = await res.json()
+      if(resData.acknowledged){
+        router.push(`/poll/${resData?.insertedId}`)
+      }
     } catch (error) {
       console.error("Error creating poll:", error)
       alert("Failed to create poll. Please try again.")

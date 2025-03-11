@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 export const GET = async (req) =>{
     try{
         const db = await connectDB();
-        const searchParams = new URL(req.url)
+        const {searchParams} = new URL(req.url)
         const pollId = searchParams.get('pollId');
         const query = {pollId: pollId};
         const commentCollection = await db.collection('comments');

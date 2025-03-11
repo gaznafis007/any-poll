@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { FiSend } from "react-icons/fi"
 
-export default function CommentSection({ pollId, comments: initialComments = [] }) {
-  const [comments, setComments] = useState(initialComments)
+
+export default function CommentSection({ pollId }) {
+  const [comments, setComments] = useState([])
   const {
     register,
     handleSubmit,
@@ -18,6 +19,7 @@ export default function CommentSection({ pollId, comments: initialComments = [] 
   })
 
   const onSubmit = async (data) => {
+    console.log(data)
     if (!data.comment.trim()) return
 
     try {
@@ -51,6 +53,15 @@ export default function CommentSection({ pollId, comments: initialComments = [] 
     const diffInDays = Math.floor(diffInHours / 24)
     return `${diffInDays}d ago`
   }
+
+  useEffect(() =>{
+    const getComments = async () =>{
+        // const res = await fetch(`/api/comments?pollId=${pollId}`);
+        // const data = await res.json();
+        // setComments(data)
+    }
+    getComments()
+  },[])
 
   return (
     <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
