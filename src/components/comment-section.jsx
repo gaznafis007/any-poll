@@ -1,12 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { FiSend } from "react-icons/fi"
-
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FiSend } from "react-icons/fi";
 
 export default function CommentSection({ pollId }) {
-  const [comments, setComments] = useState([])
+  const [comments, setComments] = useState([]);
+  const getComments = async () => {
+    const res = await fetch(`/api/comments?pollId=${pollId}`);
+    const data = await res.json();
+    setComments(data);
+  };
   const {
     register,
     handleSubmit,
@@ -16,52 +20,56 @@ export default function CommentSection({ pollId }) {
     defaultValues: {
       comment: "",
     },
-  })
+  });
 
   const onSubmit = async (data) => {
-    console.log(data)
-    if (!data.comment.trim()) return
+    if (!data.comment.trim()) return;
 
     try {
       // This would normally send data to your backend
       const comment = {
         ...data,
         pollId: pollId,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+      };
+      //   console.log(comment)
+      const res = await fetch(`/api/comments`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(comment),
+      });
+      const resData = await res.json();
+      if (resData.acknowledged) {
+        getComments()
       }
-      console.log(comment)
-
-      setComments([...comments, comment])
-      reset()
+      reset();
     } catch (error) {
-      console.error("Error adding comment:", error)
-      alert("Failed to add comment. Please try again.")
+      console.error("Error adding comment:", error);
+      alert("Failed to add comment. Please try again.");
     }
-  }
+  };
 
   const formatCommentDate = (dateString) => {
-    const date = new Date(dateString)
-    const now = new Date()
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60))
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
 
-    if (diffInMinutes < 1) return "just now"
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`
+    if (diffInMinutes < 1) return "just now";
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
 
-    const diffInHours = Math.floor(diffInMinutes / 60)
-    if (diffInHours < 24) return `${diffInHours}h ago`
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}h ago`;
 
-    const diffInDays = Math.floor(diffInHours / 24)
-    return `${diffInDays}d ago`
-  }
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays}d ago`;
+  };
 
-  useEffect(() =>{
-    const getComments = async () =>{
-        // const res = await fetch(`/api/comments?pollId=${pollId}`);
-        // const data = await res.json();
-        // setComments(data)
-    }
-    getComments()
-  },[])
+  useEffect(() => {
+    
+    getComments();
+  }, []);
 
   return (
     <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
@@ -76,7 +84,11 @@ export default function CommentSection({ pollId }) {
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800"
               rows={2}
             />
-            {errors.comment && <p className="mt-1 text-sm text-red-500">{errors.comment.message}</p>}
+            {errors.comment && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.comment.message}
+              </p>
+            )}
           </div>
           <button
             type="submit"
@@ -90,20 +102,26 @@ export default function CommentSection({ pollId }) {
 
       <div className="space-y-4">
         {comments.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-center py-4">No comments yet. Be the first to comment!</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+            No comments yet. Be the first to comment!
+          </p>
         ) : (
           comments.map((comment) => (
-            <div key={comment.id} className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+            <div
+              key={comment._id}
+              className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"
+            >
               <div className="flex justify-between items-start mb-2">
-                <div className="font-medium">Anonymous</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">{formatCommentDate(comment.createdAt)}</div>
+                <div className="font-medium">Anonymous {Math.floor(100000 + Math.random() * 900000)}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {formatCommentDate(comment.createdAt)}
+                </div>
               </div>
-              <p className="text-gray-700 dark:text-gray-300">{comment.text}</p>
+              <p className="text-gray-700 dark:text-gray-300">{comment.comment}</p>
             </div>
           ))
         )}
       </div>
     </div>
-  )
+  );
 }
-
