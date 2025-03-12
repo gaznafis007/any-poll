@@ -8,37 +8,75 @@ import { FiShare2, FiTrendingUp, FiThumbsUp, FiHome } from "react-icons/fi"
 export default function PollResults({ poll }) {
   const [reactions, setReactions] = useState(poll?.reactions || { trending: 0, like: 0 })
 
-  // Calculate time remaining
-  const expiresAt = new Date(poll.expiresAt)
-  const now = new Date()
-  const timeRemaining = expiresAt - now
-  const isExpired = timeRemaining <= 0
+   // Calculate expiration time from creation time + expiration (in seconds)
+   const createdAt = new Date(poll.createdAt); // Ensure `createdAt` exists in your poll data
+   const expiresAt = new Date(createdAt.getTime() + poll.expiration * 1000);
+   const now = new Date();
+   const timeRemaining = expiresAt - now;
+   const isExpired = timeRemaining <= 0;
+ 
+   // Function to format time
+   const formatTimeRemaining = () => {
+     if (isExpired) return "Expired";
+ 
+     const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+     const minutes = Math.floor(
+       (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+     );
+ 
+     return hours > 0
+       ? `${hours}h ${minutes}m remaining`
+       : `${minutes}m remaining`;
+   };
 
-  const formatTimeRemaining = () => {
-    if (isExpired) return "Poll ended"
-
-    const hours = Math.floor(timeRemaining / (1000 * 60 * 60))
-    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60))
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}m remaining`
-    }
-    return `${minutes}m remaining`
-  }
-
-  const handleReaction = async (type) => {
+   const handleReaction = async (type) => {
     try {
       // This would normally send data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 300))
+      if (!poll.reactions) {
+        const newPoll = {
+          ...poll,
+          reactions: {
+            trending: 0,
+            like: 0,
+          },
+        };
+        const targetedReaction = newPoll?.reactions;
+        targetedReaction[type] = targetedReaction[type] + 1;;
+        const { _id, ...updatedPoll } = newPoll;
+        const res = await fetch(`/api/polls/${poll._id}`, {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(updatedPoll),
+        });
+        const resData = await res.json();
+        console.log(resData);
+      } else {
+        const { reactions: targetedReaction } = poll;
+        // console.log(targetedReaction)
+        targetedReaction[type] = targetedReaction[type] + 1;
+        const { _id, ...updatedPoll } = poll;
+        // console.log(updatedPoll)
+        const res = await fetch(`/api/polls/${poll._id}`, {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(updatedPoll),
+        });
+        const resData = await res.json();
+        console.log(resData);
+      }
 
       setReactions({
         ...reactions,
         [type]: reactions[type] + 1,
-      })
+      });
     } catch (error) {
-      console.error("Error adding reaction:", error)
+      console.error("Error adding reaction:", error);
     }
-  }
+  };
 
   const copyLinkToClipboard = () => {
     // Get base URL without /results
@@ -54,7 +92,9 @@ export default function PollResults({ poll }) {
   }
 
   // Calculate total votes and percentages
-  const totalVotes = poll.options.reduce((sum, option) => sum + option?.votes, 0)
+  const votedOptions = poll?.options.filter(option => option.votes)
+  const totalVotes = votedOptions.reduce((sum, option) => sum + option.votes, 0)
+  // console.log(totalVotes, poll.options)
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
@@ -74,14 +114,14 @@ export default function PollResults({ poll }) {
 
         <div className="space-y-4 mb-6">
           {poll.options.map((option) => {
-            const percentage = totalVotes > 0 ? Math.round((option.votes / totalVotes) * 100) : 0
-
+            const percentage = totalVotes > 0 ? ((option.votes || 0 )/ totalVotes) * 100 : 0
+            // console.log((option.votes / totalVotes) * 100)
             return (
               <div key={option.id} className="space-y-1">
                 <div className="flex justify-between">
                   <span className="font-medium">{option.text}</span>
                   <span className="text-gray-500 dark:text-gray-400">
-                    {percentage}% ({option.votes})
+                    {percentage}% ({option?.votes || 0})
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
@@ -95,7 +135,7 @@ export default function PollResults({ poll }) {
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           {!isExpired && (
             <Link
-              href={`/poll/${poll.id}`}
+              href={`/poll/${poll._id}`}
               className="flex-1 py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow transition-colors text-center"
             >
               Back to Poll
@@ -137,7 +177,7 @@ export default function PollResults({ poll }) {
         </div>
       </div>
 
-      <CommentSection pollId={poll.id} comments={poll.comments} />
+      <CommentSection pollId={poll._id} />
     </div>
   )
 }

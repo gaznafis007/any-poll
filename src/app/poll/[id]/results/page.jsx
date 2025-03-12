@@ -28,7 +28,7 @@ const getPoll = async (id) => {
 
   // Simulate API delay
   try{
-    const res = await fetch(`/api/polls/${id}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/polls/${id}`);
   const data = await res.json()
   return data
   }catch(err){

@@ -6,6 +6,7 @@ import { FiSend } from "react-icons/fi";
 
 export default function CommentSection({ pollId }) {
   const [comments, setComments] = useState([]);
+//   console.log(comments)
   const getComments = async () => {
     const res = await fetch(`/api/comments?pollId=${pollId}`);
     const data = await res.json();
@@ -67,7 +68,6 @@ export default function CommentSection({ pollId }) {
   };
 
   useEffect(() => {
-    
     getComments();
   }, []);
 

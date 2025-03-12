@@ -47,7 +47,7 @@ export default function PollView({ poll }) {
         (option) => option.text === selectedOption
       );
       if (targetedOption?.votes) {
-        targetedOption.votes = +1;
+        targetedOption.votes = targetedOption.votes + 1;
       } else {
         targetedOption["votes"] = 1;
       }
@@ -92,7 +92,7 @@ export default function PollView({ poll }) {
           },
         };
         const targetedReaction = newPoll?.reactions;
-        targetedReaction[type] = +1;
+        targetedReaction[type] = targetedReaction[type] + 1;
         const { _id, ...updatedPoll } = newPoll;
         const res = await fetch(`/api/polls/${poll._id}`, {
           method: "PUT",
@@ -105,8 +105,8 @@ export default function PollView({ poll }) {
         console.log(resData);
       } else {
         const { reactions: targetedReaction } = poll;
-        targetedReaction[type] = +1;
-        const { _id, updatedPoll } = poll;
+        targetedReaction[type] = targetedReaction[type] + 1;
+        const { _id, ...updatedPoll } = poll;
         const res = await fetch(`/api/polls/${poll._id}`, {
           method: "PUT",
           headers: {
