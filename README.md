@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+```markdown
+# AnyPoll
+
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://any-poll.vercel.app/)
+
+AnyPoll is a privacy-focused polling application that allows users to create anonymous, time-limited polls without requiring any login. Designed for simplicity and user privacy, AnyPoll ensures that your polls are both private and ephemeral.
+
+## Features
+
+- **Anonymous Voting**: No registration or login required to create or participate in polls.
+- **Time-Limited Polls**: Polls automatically expire after a set duration (1 hour, 12 hours, 24 hours, or 1 week).
+- **Optional Result Visibility**: Choose to hide results until the poll ends to prevent bias.
+- **Real-Time Reactions**: Engage with polls using reactions like "Trending" and "Like".
+- **Responsive Design**: Seamless experience across devices with dark/light mode support.
+
+## Live Demo
+
+Explore the live application here: [AnyPoll Live](https://any-poll.vercel.app/)
+
+## Tech Stack
+
+- **Next.js**: React framework for server-side rendering and static site generation.
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development.
+- **React Hook Form**: Simplifies form handling with React hooks.
+- **React Icons**: Collection of popular icons as React components.
+- **MongoDB**: NoSQL database for flexible and scalable data storage.
+- **REST API**: Backend architecture for handling HTTP requests and responses.
 
 ## Getting Started
 
-First, run the development server:
+To run AnyPoll locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the Repository**:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   git clone https://github.com/gaznafis007/any-poll.git
+   cd any-poll
+   ```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+2. **Install Dependencies**:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-## Learn More
+3. **Set Up Environment Variables**:
 
-To learn more about Next.js, take a look at the following resources:
+   Create a `.env.local` file in the root directory and add your MongoDB connection string:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. **Run the Development Server**:
 
-## Deploy on Vercel
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+- `/public`: Static assets like images and icons.
+- `/src`:
+  - `/app`: Main application components and pages.
+  - `/components`: Reusable UI components.
+  - `/lib`: Utility functions and database connection logic.
+  - `/styles`: Global and component-specific styles.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure that your code adheres to the project's coding standards and includes relevant tests.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React Hook Form](https://react-hook-form.com/)
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [MongoDB](https://www.mongodb.com/)
+- [Vercel](https://vercel.com/) for deployment and hosting.
+
+---
+
+*Note: This project is a work in progress. Feedback and suggestions are appreciated to improve AnyPoll further.*
+``` 
