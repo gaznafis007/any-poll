@@ -6,11 +6,19 @@ import { FiSend } from "react-icons/fi";
 
 export default function CommentSection({ pollId }) {
   const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(false)
 //   console.log(comments)
   const getComments = async () => {
-    const res = await fetch(`/api/comments?pollId=${pollId}`);
+    try{
+        setLoading(true)
+        const res = await fetch(`/api/comments?pollId=${pollId}`);
     const data = await res.json();
     setComments(data);
+    }catch(err){
+        console.log(err.message)
+    }finally{
+        setLoading(false)
+    }
   };
   const {
     register,

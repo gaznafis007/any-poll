@@ -36,6 +36,7 @@ export default function PollView({ poll }) {
       : `${minutes}m remaining`;
   };
 
+//   Voting Function
   const handleVote = async () => {
     setIsVoting(true)
     if (!selectedOption || hasVoted || isExpired) return;
@@ -80,6 +81,7 @@ export default function PollView({ poll }) {
     }
   };
 
+  //Reaction Funtion
   const handleReaction = async (type) => {
     try {
       // This would normally send data to your backend
@@ -127,6 +129,7 @@ export default function PollView({ poll }) {
     }
   };
 
+//   URL copying Function
   const copyLinkToClipboard = () => {
     const url = window.location.href;
     navigator.clipboard
@@ -194,7 +197,7 @@ export default function PollView({ poll }) {
             disabled={isVoting ||!selectedOption || hasVoted || isExpired}
             className="flex-1 py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isVoting ? 'Voting' : hasVoted ? "Voted" : isExpired ? "Poll Ended" : "Submit Vote"}
+            {isVoting ? 'Voting...' : hasVoted ? "Voted" : isExpired ? "Poll Ended" : "Submit Vote"}
           </button>
 
           {(hasVoted || !poll.hideResults || isExpired) && (
