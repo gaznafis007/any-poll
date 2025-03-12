@@ -8,6 +8,7 @@ import { FiHeart, FiShare2, FiTrendingUp, FiThumbsUp } from "react-icons/fi";
 
 export default function PollView({ poll }) {
   const router = useRouter();
+  const [isVoting, setIsVoting] = useState(false)
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [reactions, setReactions] = useState(
@@ -36,16 +37,36 @@ export default function PollView({ poll }) {
   };
 
   const handleVote = async () => {
+    setIsVoting(true)
     if (!selectedOption || hasVoted || isExpired) return;
 
     try {
       // This would normally send data to your backend
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setHasVoted(true);
+      const { _id, ...doc } = poll;
+      const targetedOption = doc.options.find(
+        (option) => option.text === selectedOption
+      );
+      if (targetedOption?.votes) {
+        targetedOption.votes = +1;
+      } else {
+        targetedOption["votes"] = 1;
+      }
+      const res = await fetch(`/api/polls/${poll?._id}`, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify(doc)
+      });
+      const resData = await res.json();
+      console.log(resData)
+      if (resData.modifiedCount > 0) {
+        setHasVoted(true);
+      }
 
       // If results are hidden until poll ends and poll is not expired, redirect to confirmation page
       if (poll.hideResults && !isExpired) {
-        router.push(`/poll/${poll._id}/voted`);
+        // router.push(`/poll/${poll._id}/voted`);
         return;
       }
 
@@ -54,48 +75,49 @@ export default function PollView({ poll }) {
     } catch (error) {
       console.error("Error voting:", error);
       alert("Failed to submit vote. Please try again.");
+    }finally{
+        setIsVoting(false)
     }
   };
 
   const handleReaction = async (type) => {
     try {
       // This would normally send data to your backend
-      if(!poll.reactions){
+      if (!poll.reactions) {
         const newPoll = {
-            ...poll,
-            reactions:{
-                trending: 0,
-                like: 0
-            }
-        }
-        const targetedReaction = newPoll?.reactions
-        targetedReaction[type] =+ 1 
-        const {_id, ...updatedPoll} = newPoll
+          ...poll,
+          reactions: {
+            trending: 0,
+            like: 0,
+          },
+        };
+        const targetedReaction = newPoll?.reactions;
+        targetedReaction[type] = +1;
+        const { _id, ...updatedPoll } = newPoll;
         const res = await fetch(`/api/polls/${poll._id}`, {
-            method: 'PUT',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(updatedPoll)
-        })
-        const resData = await res.json()
-        console.log(resData)
-      }
-      else{
-        const {reactions:targetedReaction} = poll
-        targetedReaction[type] =+ 1
-        const {_id, updatedPoll} = poll
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(updatedPoll),
+        });
+        const resData = await res.json();
+        console.log(resData);
+      } else {
+        const { reactions: targetedReaction } = poll;
+        targetedReaction[type] = +1;
+        const { _id, updatedPoll } = poll;
         const res = await fetch(`/api/polls/${poll._id}`, {
-            method: 'PUT',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(updatedPoll)
-        })
-        const resData = await res.json()
-        console.log(resData)
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(updatedPoll),
+        });
+        const resData = await res.json();
+        console.log(resData);
       }
-      
+
       setReactions({
         ...reactions,
         [type]: reactions[type] + 1,
@@ -169,10 +191,10 @@ export default function PollView({ poll }) {
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <button
             onClick={handleVote}
-            disabled={!selectedOption || hasVoted || isExpired}
+            disabled={isVoting ||!selectedOption || hasVoted || isExpired}
             className="flex-1 py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md shadow transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {hasVoted ? "Voted" : isExpired ? "Poll Ended" : "Submit Vote"}
+            {isVoting ? 'Voting' : hasVoted ? "Voted" : isExpired ? "Poll Ended" : "Submit Vote"}
           </button>
 
           {(hasVoted || !poll.hideResults || isExpired) && (
